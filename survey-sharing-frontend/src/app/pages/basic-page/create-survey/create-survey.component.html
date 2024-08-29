@@ -1,0 +1,168 @@
+<nb-layout>
+  <nb-layout-column>
+    <nb-card>
+      <nb-card-header>
+        <h1>Create survey</h1>
+      </nb-card-header>
+      <nb-card-body>
+        <nb-card>
+          <nb-card-header>
+            <div class="item-container">
+              <div class="item-left">
+                <h5><b>Survey title:</b></h5>
+              </div>
+              <div class="item-1">
+                <input nbInput fullWidth [(ngModel)]="surveyTitle" (input)="onInputChange($event)" [status]="getInputStatus(available)"
+                        [nbTooltip]="getInputTooltip(available)" [nbTooltipStatus]="getInputStatus(available)" [nbTooltipIcon]="getTooltipIcon()"
+                        [nbTooltipTrigger]="tooltipTrigger">
+              </div>
+            </div>
+          </nb-card-header>
+          <!--EXISTING QUESTIONS-->
+          <nb-card-body>
+            <ng-container *ngFor="let question of questions">
+              <nb-card>
+                <nb-card-header>
+                  <div class="item-container">
+                    <div class="item-left">
+                      <h5>{{question.question.question}}</h5>
+                    </div>
+                    <div class="item-right">
+                      <nb-actions size="small">
+                        <nb-action icon="trash-2" (click)="removeQuestion(question)"></nb-action>
+                      </nb-actions>
+                    </div>
+                  </div>
+                </nb-card-header>
+                <div *ngIf="isMultipleChoice(question.question)">
+                  <div class="item-1">
+                    <nb-card-body>
+                      <nb-radio-group disabled [(ngModel)]="nullVariable">
+                        <nb-radio *ngFor="let option of getOptions(question.question)">
+                          {{option.option}}
+                        </nb-radio>
+                      </nb-radio-group>
+                    </nb-card-body>
+                  </div>
+                </div>
+                <div *ngIf="isOpenEnded(question.question)">
+                  <nb-card-body>
+                    <div class="item-container">
+                      <div class="item-left">
+                        <h5><b>Answer: </b></h5>
+                      </div>
+                      <div class="item-1">
+                        <textarea nbInput fullWidth="true" disabled></textarea>
+                      </div>
+                    </div>
+                  </nb-card-body>
+                </div>
+                <div *ngIf="isImage(question.question)">
+                  <nb-card-body>
+                    <div class="item-container">
+                      <div class="item-left">
+                        <h5><b>Answer: </b></h5>
+                      </div>
+                      <div class="item-1">
+                        <textarea nbInput fullWidth="true" disabled></textarea>
+                      </div>
+                    </div>
+                  </nb-card-body>
+                </div>
+              </nb-card>
+            </ng-container>
+            <!--QUESTION MAKING-->
+            <ng-container *ngIf="currQuestion < questionPartial.length">
+              <nb-card>
+                <nb-card-header>
+                  <div class="item-container">
+                    <div class="item-left">
+                      <h5><b>Question:</b></h5>
+                    </div>
+                    <div class="item-1">
+                      <input nbInput fullWidth [(ngModel)]="questionPartial[currQuestion].question.question"
+                        (input)="onInputChange2($event)" [status]="getInputStatus(available2)"
+                        [nbTooltip]="getInputTooltip2(available2)" [nbTooltipStatus]="getInputStatus(available2)" [nbTooltipIcon]="getTooltipIcon()"
+                        [nbTooltipTrigger]="tooltipTrigger">
+                    </div>
+                  </div>
+                </nb-card-header>
+                <div *ngIf="isMultipleChoice(questionPartial[currQuestion].question)">
+                  <div class="item-1">
+                    <nb-card-body>
+                      <nb-radio-group disabled [(ngModel)]="nullVariable">
+                        <nb-radio *ngFor="let option of getOptions(questionPartial[currQuestion].question)">
+                          <div class="item-container">
+                            <div class="item-left">
+                              {{option.option}}
+                            </div>
+                            <div class="item-left">
+                              <nb-actions size="small">
+                                <nb-action icon="backspace" (click)="removeOption(option, getOptions(questionPartial[currQuestion].question))"></nb-action>
+                              </nb-actions>
+                            </div>
+                          </div>
+                        </nb-radio>
+                      </nb-radio-group>
+                      <div class="item-container">
+                        <div class="item-left">
+                          <input nbInput [(ngModel)]="newOption">
+                          <button nbButton (click)="addOption(questionPartial[currQuestion].question)">Add option</button>
+                        </div>
+                      </div>
+                    </nb-card-body>
+                  </div>
+                </div>
+                <div *ngIf="isOpenEnded(questionPartial[currQuestion].question)">
+                  <nb-card-body>
+                    <div class="item-container">
+                      <div class="item-left">
+                        <h5><b>Answer: </b></h5>
+                      </div>
+                      <div class="item-1">
+                        <textarea nbInput fullWidth="true" disabled></textarea>
+                      </div>
+                    </div>
+                  </nb-card-body>
+                </div>
+                <div *ngIf="isImage(questionPartial[currQuestion].question)">
+                  <nb-card-body>
+                    <div class="item-container">
+                      <div class="item-left">
+                        <h5><b>Answer: </b></h5>
+                      </div>
+                      <div class="item-1">
+                        <textarea nbInput fullWidth="true" disabled></textarea>
+                      </div>
+                    </div>
+                  </nb-card-body>
+                </div>
+                <nb-card-footer>
+                  <div class="item-2">
+                    <button nbButton (click)="confirmQuestion()">Confirm question</button>
+                  </div>
+                </nb-card-footer>
+              </nb-card>
+            </ng-container>
+            <div class="item-1" *ngIf="!questionMaking">
+              <button nbButton nbContextMenuTag="my-context-menu" [nbContextMenu]="questionTypes">
+                Add question
+              </button>
+            </div>
+            <div class="item-1" *ngIf="questionMaking">
+              <button nbButton nbContextMenuTag="my-context-menu" [nbContextMenu]="questionTypes" disabled="true">
+                Add question
+              </button>
+            </div>
+          </nb-card-body>
+          <nb-card-footer>
+            <div class="item-3">
+              <button nbButton (click)="submit()">Submit survey</button>
+            </div>
+          </nb-card-footer>
+        </nb-card>
+      </nb-card-body>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>
+

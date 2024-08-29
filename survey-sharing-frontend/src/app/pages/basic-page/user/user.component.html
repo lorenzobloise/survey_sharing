@@ -1,0 +1,218 @@
+<nb-layout>
+  <nb-layout-column>
+    <nb-card>
+      <nb-card-header>
+        <h1>{{globalService.getUser().firstname}} {{globalService.getUser().lastname}}</h1>
+      </nb-card-header>
+      <nb-card-body>
+        <nb-card>
+          <nb-card-header>
+            <h4>Information</h4>
+          </nb-card-header>
+          <nb-card-body>
+            <nb-list>
+              <nb-list-item>
+                <div class="item-container">
+                  <div class="item-1">
+                    <b>Name</b>: {{globalService.getUser().firstname}}
+                  </div>
+                  <div class="item-1">
+                    <b>Surname</b>: {{globalService.getUser().lastname}}
+                  </div>
+                  <div class="item-1"></div>
+                  <div class="item-1"></div>
+                  <div class="item-1"></div>
+                </div>
+              </nb-list-item>
+              <nb-list-item>
+                <div class="item-container">
+                  <div class="item-1">
+                    <b>Username</b>: {{globalService.getUser().username}}
+                  </div>
+                  <div class="item-1">
+                    <b>Email</b>: {{globalService.getUser().email}}
+                  </div>
+                  <div class="item-1"></div>
+                  <div class="item-1"></div>
+                  <div class="item-1"></div>
+                </div>
+              </nb-list-item>
+              <nb-list-item>
+                <div class="item-container">
+                  <div class="item-1">
+                    <b>Age</b>: {{globalService.getUser().age}}
+                  </div>
+                  <div class="item-1">
+                    <b>Gender</b>: {{globalService.getUser().gender}}
+                  </div>
+                  <div class="item-1"></div>
+                  <div class="item-1"></div>
+                  <div class="item-1"></div>
+                </div>
+              </nb-list-item>
+              <nb-list-item>
+                <div class="item-1">
+                  <b>Country</b>: {{globalService.getUser().country}}
+                </div>
+                <div class="item-left">
+                  <b>Registered since</b>:
+                </div>
+                <div class="item-left">
+                  {{globalService.getParsedDate(globalService.getUser().registrationDate)}}
+                  <br>{{globalService.getParsedHour(globalService.getUser().registrationDate)}}
+                </div>
+                <div class="item-1"></div>
+                <div class="item-1"></div>
+                <div class="item-1"></div>
+              </nb-list-item>
+            </nb-list>
+          </nb-card-body>
+        </nb-card>
+        <nb-card>
+          <nb-tabset fullWidth="">
+            <nb-tab tabTitle="Created Surveys">
+              <nb-list>
+                <nb-list-item>
+                  <div class="item-container">
+                    <div class="item-1">
+                      <b>Title</b>
+                    </div>
+                    <div class="item-1">
+                      <b>Creation date</b>
+                    </div>
+                    <div class="item-2">
+                      <b>Average rating</b>
+                    </div>
+                    <div class="item-2">
+                      <b>Status</b>
+                    </div>
+                    <div class="item-3"></div>
+                    <div class="item-3"></div>
+                  </div>
+                </nb-list-item>
+                <nb-list-item *ngFor="let survey of globalService.getCreatedSurveys()">
+                  <div class="item-container">
+                    <div class="item-1">
+                      {{survey.title}}
+                    </div>
+                    <div class="item-1">
+                      {{globalService.getParsedDate(survey.creationDate)}}
+                      <br>{{globalService.getParsedHour(survey.creationDate)}}
+                    </div>
+                    <div class="item-2">
+                      <app-rating [averageRating]="getAverageRating(survey.title)"></app-rating>
+                    </div>
+                    <div class="item-2">
+                      <nb-icon *ngIf="!survey.closed" class="custom-icon" icon="unlock" status="success"></nb-icon>
+                      <nb-icon *ngIf="survey.closed" class="custom-icon" icon="lock" status="danger"></nb-icon>
+                    </div>
+                    <div class="item-3">
+                      <button nbButton (click)="goToSurveyDetailsPage(survey.title)">Details<nb-icon icon="file-text"></nb-icon></button>
+                    </div>
+                    <div class="item-3">
+                      <button nbButton (click)="deleteCreatedSurvey(survey.title)">Delete<nb-icon icon="trash-2"></nb-icon></button>
+                    </div>
+                  </div>
+                </nb-list-item>
+              </nb-list>
+            </nb-tab>
+            <nb-tab tabTitle="Answered surveys">
+              <nb-list>
+                <nb-list-item>
+                  <div class="item-container">
+                    <div class="item-1">
+                      <b>Title</b>
+                    </div>
+                    <div class="item-1">
+                      <b>Created by</b>
+                    </div>
+                    <div class="item-2">
+                      <b>Answer date</b>
+                    </div>
+                    <div class="item-3"></div>
+                    <div class="item-3"></div>
+                  </div>
+                </nb-list-item>
+                <nb-list-item *ngFor="let answer of globalService.getAnswers()">
+                  <div class="item-container">
+                    <div class="item-1">
+                      {{answer.answer.survey}}
+                    </div>
+                    <div class="item-1">
+                      <nb-user name="{{answer.surveyOwner.firstname}} {{answer.surveyOwner.lastname}}" title="{{answer.surveyOwner.username}}"></nb-user>
+                    </div>
+                    <div class="item-2">
+                      {{globalService.getParsedDate(answer.answer.answerDate)}}
+                      <br>{{globalService.getParsedHour(answer.answer.answerDate)}}
+                    </div>
+                    <div class="item-3">
+                      <button nbButton (click)="goToAnswerDetailsPage(answer.answer.survey)">Details<nb-icon icon="file-text"></nb-icon></button>
+                    </div>
+                    <div class="item-3">
+                      <button nbButton (click)="deleteAnswer(answer.answer.id)">Delete<nb-icon icon="trash-2"></nb-icon></button>
+                    </div>
+                  </div>
+                </nb-list-item>
+              </nb-list>
+            </nb-tab>
+            <nb-tab tabTitle="Invitations">
+              <nb-list>
+                <nb-list-item>
+                  <div class="item-container">
+                    <div class="item-1">
+                      <b>Survey</b>
+                    </div>
+                    <div class="item-1">
+                      <b>Sender</b>
+                    </div>
+                    <div class="item-2">
+                      <b>Invitation date</b>
+                    </div>
+                    <div class="item-2">
+                      <b>Message</b>
+                    </div>
+                    <div class="item-2">
+                      <b>Status</b>
+                    </div>
+                    <div class="item-3"></div>
+                    <div class="item-3"></div>
+                  </div>
+                </nb-list-item>
+                <nb-list-item *ngFor="let invitation of globalService.getInvitations()">
+                  <div class="item-container">
+                    <div class="item-1">
+                      {{invitation.invitation.survey}}
+                    </div>
+                    <div class="item-1">
+                      <nb-user name="{{invitation.surveyOwner.firstname}} {{invitation.surveyOwner.lastname}}" title="{{invitation.surveyOwner.username}}"></nb-user>
+                    </div>
+                    <div class="item-2">
+                      {{globalService.getParsedDate(invitation.invitation.invitationDate)}}
+                      <br>{{globalService.getParsedHour(invitation.invitation.invitationDate)}}
+                    </div>
+                    <div class="item-2">
+                      {{invitation.invitation.message}}
+                    </div>
+                    <div class="item-2">
+                      <nb-icon *ngIf="!invitation.survey.closed" class="custom-icon" icon="unlock" status="success"></nb-icon>
+                      <nb-icon *ngIf="invitation.survey.closed" class="custom-icon" icon="lock" status="danger"></nb-icon>
+                    </div>
+                    <div class="item-3">
+                      <button nbButton disabled="{{surveyAnsweredOrClosed(invitation.survey)}}" (click)="answerSurvey(invitation.invitation.survey)"
+                      [nbTooltip]="getTooltip(invitation.survey, invitation.invitation)" [nbTooltipDisabled]="!surveyAnsweredOrClosed(invitation.survey)">
+                        Accept<nb-icon icon="checkmark-circle-2"></nb-icon>
+                      </button>
+                    </div>
+                    <div class="item-3">
+                      <button nbButton (click)="deleteInvitation(invitation.invitation.id)">Delete<nb-icon icon="trash-2"></nb-icon></button>
+                    </div>
+                  </div>
+                </nb-list-item>
+              </nb-list>
+            </nb-tab>
+          </nb-tabset>
+        </nb-card>
+      </nb-card-body>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>

@@ -1,0 +1,56 @@
+.item-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 10px;
+}
+
+.item-left {
+  flex: 0 0 auto;
+  display: flex;
+  margin-right: 15px;
+  justify-content: flex-start;
+}
+
+.item-center {
+  flex: 0 0 auto;
+  display: flex;
+  margin-left: 15px;
+  margin-right: 15px;
+  justify-content: flex-start;
+}
+
+.item-right {
+  flex: 0 0 auto;
+  display: flex;
+  margin-left: 15px;
+  justify-content: flex-end;
+}
+
+.item-1 {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.item-2 {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.item-3 {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.echart {
+  width: 100%;
+  height: 400px;
+}
+
+.custom-icon {
+  font-size: 36px;
+}

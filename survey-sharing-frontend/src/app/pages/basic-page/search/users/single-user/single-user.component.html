@@ -1,0 +1,103 @@
+<nb-layout>
+  <nb-layout-column>
+    <nb-card>
+      <nb-card-header>
+        <div class="item-1">
+          <h1>{{user.firstname}} {{user.lastname}}</h1>
+        </div>
+      </nb-card-header>
+      <nb-card-body>
+        <nb-layout>
+          <!--Information about the user-->
+          <nb-layout-column>
+            <nb-card>
+              <nb-card-header>
+                <h4>Information</h4>
+              </nb-card-header>
+              <nb-card-body>
+                <nb-list>
+                  <nb-list-item>
+                    <div class="item-container">
+                      <div class="item-1">
+                        <b>Name</b>: {{user.firstname}}
+                      </div>
+                      <div class="item-3">
+                        <b>Surname</b>: {{user.lastname}}
+                      </div>
+                    </div>
+                  </nb-list-item>
+                  <nb-list-item>
+                    <div class="item-container">
+                      <div class="item-1">
+                        <b>Username</b>: {{user.username}}
+                      </div>
+                      <div class="item-3">
+                        <b>Email</b>: {{user.email}}
+                      </div>
+                    </div>
+                  </nb-list-item>
+                  <nb-list-item>
+                    <div class="item-container">
+                      <div class="item-1">
+                        <b>Age</b>: {{user.age}}
+                      </div>
+                      <div class="item-2">
+                        <b>Gender</b>: {{user.gender}}
+                      </div>
+                      <div class="item-3">
+                        <b>Country</b>: {{user.country}}
+                      </div>
+                    </div>
+                  </nb-list-item>
+                  <nb-list-item>
+                    <div class="item-2">
+                      <b>Registered since</b>: {{user.registrationDate[0]}}/{{user.registrationDate[1]}}/{{user.registrationDate[2]}} {{user.registrationDate[3]}}:{{user.registrationDate[4]}}:{{user.registrationDate[5]}}
+                    </div>
+                  </nb-list-item>
+                </nb-list>
+              </nb-card-body>
+            </nb-card>
+          </nb-layout-column>
+          <!--Surveys created by this user-->
+          <nb-layout-column>
+            <nb-card>
+              <nb-card-header>
+                <h4>Created surveys</h4>
+              </nb-card-header>
+              <nb-card-body>
+                <nb-list>
+                  <nb-list-item>
+                    <div class="item-container">
+                      <div class="item-1">
+                        <b>Title</b>
+                      </div>
+                      <div class="item-2">
+                        <b>Creation date</b>
+                      </div>
+                      <div class="item-3"></div>
+                    </div>
+                  </nb-list-item>
+                  <nb-list-item *ngFor="let survey of createdSurveys">
+                    <div class="item-container">
+                      <div class="item-1">
+                        {{survey.title}}
+                      </div>
+                      <div class="item-2">
+                        {{survey.creationDate[0]}}/{{survey.creationDate[1]}}/{{survey.creationDate[2]}}
+                        <br>{{survey.creationDate[3]}}:{{survey.creationDate[4]}}:{{survey.creationDate[5]}}
+                      </div>
+                      <div class="item-3">
+                        <button nbButton [disabled]="surveyAlreadyAnswered(survey.title)" nbTooltip="You have already answered this survey"
+                        [nbTooltipDisabled]="!surveyAlreadyAnswered(survey.title)" (click)="goToAnswerPage(survey.title)">Answer</button>
+                      </div>
+                    </div>
+                  </nb-list-item>
+                </nb-list>
+              </nb-card-body>
+            </nb-card>
+          </nb-layout-column>
+        </nb-layout>
+      </nb-card-body>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>

@@ -1,0 +1,23 @@
+<nb-layout>
+  <nb-layout-column>
+    <nb-card>
+      <nb-card-header>
+        <h1>Results</h1>
+      </nb-card-header>
+      <nb-card-body>
+        <nb-list>
+          <nb-list-item *ngFor="let user of search_results">
+            <div class="item-container">
+              <div class="item-user">
+                <nb-user name="{{user.firstname}} {{user.lastname}}" title="{{user.username}}"></nb-user>
+              </div>
+              <div class="item-button" (click)="goToSingleUserPage(user.username)">
+                <button nbButton >Show details</button>
+              </div>
+            </div>
+          </nb-list-item>
+        </nb-list>
+      </nb-card-body>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>

@@ -1,0 +1,422 @@
+<nb-layout>
+  <nb-layout-column>
+    <nb-card>
+      <nb-card-header>
+        <h1>{{getSurvey().title}}</h1>
+      </nb-card-header>
+      <nb-card-body>
+        <nb-card>
+          <nb-card-header>
+            <h4>Information</h4>
+          </nb-card-header>
+          <nb-card-body>
+            <nb-list>
+              <nb-list-item>
+                <div class="item-container">
+                  <div class="item-left">
+                    <b>Created by</b>:
+                  </div>
+                  <div class="item-left">
+                    <nb-user name="{{getOwnerDetails().firstname}} {{getOwnerDetails().lastname}}" title="{{getOwnerDetails().username}}"></nb-user>
+                  </div>
+                </div>
+              </nb-list-item>
+              <nb-list-item>
+                <div class="item-left">
+                  <b>Creation date</b>:
+                </div>
+                <div class="item-left">
+                  {{getSurvey().creationDate[0]}}/{{getSurvey().creationDate[1]}}/{{getSurvey().creationDate[2]}}
+                  <br>{{getSurvey().creationDate[3]}}:{{getSurvey().creationDate[4]}}:{{getSurvey().creationDate[5]}}
+                </div>
+              </nb-list-item>
+              <nb-list-item>
+                <div class="item-left">
+                  <b>Status</b>:
+                </div>
+                <div class="item-left">
+                  <div *ngIf="!getSurvey().closed">
+                    Open <nb-icon icon="unlock" status="success"></nb-icon>
+                  </div>
+                  <div *ngIf="getSurvey().closed">
+                    Closed <nb-icon icon="lock" status="danger"></nb-icon>
+                  </div>
+                </div>
+              </nb-list-item>
+              <nb-list-item *ngIf="getSurvey().closed">
+                <div class="item-left">
+                  <b>Closing date</b>:
+                </div>
+                <div class="item-left">
+                  {{globalService.getParsedDate(getSurvey().closingDate)}}
+                  <br>{{globalService.getParsedHour(getSurvey().closingDate)}}
+                </div>
+              </nb-list-item>
+            </nb-list>
+          </nb-card-body>
+          <nb-card-footer>
+            <div class="item-container">
+              <div class="item-3">
+                <button nbButton (click)="closeSurvey(getSurvey().title)" [disabled]="getSurvey().closed" [nbTooltip]="getTooltip(getSurvey())"
+                [nbTooltipDisabled]="!getSurvey().closed">Close<nb-icon icon="lock"></nb-icon></button>
+              </div>
+              <div class="item-right">
+                <button nbButton (click)="deleteSurvey(getSurvey().title)">Delete<nb-icon icon="trash-2"></nb-icon></button>
+              </div>
+            </div>
+          </nb-card-footer>
+        </nb-card>
+        <nb-card>
+          <nb-tabset fullWidth="">
+            <nb-tab tabTitle="Questions">
+              <ng-container *ngFor="let question of questions">
+                <nb-card>
+                  <nb-card-header>
+                    <h5>{{question.question.question}}</h5>
+                  </nb-card-header>
+                  <div *ngIf="isMultipleChoice(question.question)">
+                    <div class="item-1">
+                      <nb-card-body>
+                        <nb-radio-group disabled [(ngModel)]="nullVariable">
+                          <nb-radio *ngFor="let option of getOptions(question.question)">
+                            {{option.option}}
+                          </nb-radio>
+                        </nb-radio-group>
+                      </nb-card-body>
+                    </div>
+                  </div>
+                  <div *ngIf="isOpenEnded(question.question)">
+                    <nb-card-body>
+                      <div class="item-container">
+                        <div class="item-left">
+                          <h5><b>Answer: </b></h5>
+                        </div>
+                        <div class="item-1">
+                          <textarea nbInput fullWidth="true" disabled></textarea>
+                        </div>
+                      </div>
+                    </nb-card-body>
+                  </div>
+                  <div *ngIf="isImage(question.question)">
+                    <nb-card-body>
+                      <div class="item-container">
+                        <div class="item-left">
+                          <h5><b>Answer: </b></h5>
+                        </div>
+                        <div class="item-1">
+                          <textarea nbInput fullWidth="true" disabled></textarea>
+                        </div>
+                      </div>
+                    </nb-card-body>
+                  </div>
+                </nb-card>
+              </ng-container>
+            </nb-tab>
+            <nb-tab tabTitle="Answers">
+              <nb-card>
+                <nb-card-body>
+                  <nb-list>
+                    <nb-list-item>
+                      <div class="item-container">
+                        <div class="item-1">
+                          <b>Answered by</b>
+                        </div>
+                        <div class="item-1">
+                          <b>Answer date</b>
+                        </div>
+                        <div class="item-2">
+                          <b>Rating</b>
+                        </div>
+                        <div class="item-3">
+                          <b>Feedback</b>
+                        </div>
+                        <div class="item-3"><!--BUTTON DETAILS--></div>
+                      </div>
+                    </nb-list-item>
+                    <nb-list-item *ngFor="let answer of answers">
+                      <div class="item-container">
+                        <div class="item-1">
+                          <nb-user name="{{answer.user.firstname}} {{answer.user.lastname}}" title="{{answer.user.username}}"></nb-user>
+                        </div>
+                        <div class="item-1">
+                          {{answer.answer.answerDate[0]}}/{{answer.answer.answerDate[1]}}/{{answer.answer.answerDate[2]}}
+                          <br>{{answer.answer.answerDate[3]}}:{{answer.answer.answerDate[4]}}:{{answer.answer.answerDate[5]}}
+                        </div>
+                        <div class="item-2">
+                          <app-rating [averageRating]="getRating(answer.answer)"></app-rating>
+                        </div>
+                        <div class="item-3">
+                          {{answer.answer.feedback}}
+                        </div>
+                        <div class="item-3">
+                          <button nbButton (click)="goToAnswerSummaryPage(answer.answer)">Details<nb-icon icon="file-text"></nb-icon></button>
+                        </div>
+                      </div>
+                    </nb-list-item>
+                  </nb-list>
+                </nb-card-body>
+              </nb-card>
+            </nb-tab>
+            <nb-tab tabTitle="Invitations">
+              <nb-card>
+                <nb-card-body>
+                  <nb-list>
+                    <nb-list-item>
+                      <div class="item-container">
+                        <div class="item-1">
+                          <b>Recipient</b>
+                        </div>
+                        <div class="item-1">
+                          <b>Invitation date</b>
+                        </div>
+                        <div class="item-2">
+                          <b>Accepted</b>
+                        </div>
+                        <div class="item-3">
+                          <b>Message</b>
+                        </div>
+                        <div class="item-3"></div> <!--Button DELETE-->
+                      </div>
+                    </nb-list-item>
+                    <nb-list-item *ngFor="let invitation of invitations">
+                      <div class="item-container">
+                        <div class="item-1">
+                          <nb-user name="{{invitation.recipient.firstname}} {{invitation.recipient.lastname}}" title="{{invitation.recipient.username}}"></nb-user>
+                        </div>
+                        <div class="item-1">
+                          {{invitation.invitation.invitationDate[0]}}/{{invitation.invitation.invitationDate[1]}}/{{invitation.invitation.invitationDate[2]}}
+                          <br>{{invitation.invitation.invitationDate[3]}}:{{invitation.invitation.invitationDate[4]}}:{{invitation.invitation.invitationDate[5]}}
+                        </div>
+                        <div class="item-2">
+                          <nb-icon icon="{{getInvitationAcceptedIcon(invitation.invitation)}}" status="{{getInvitationAcceptedStatus(invitation.invitation)}}"></nb-icon>
+                        </div>
+                        <div class="item-3">
+                          {{invitation.invitation.message}}
+                        </div>
+                        <div class="item-3">
+                          <button nbButton (click)="deleteInvitation(invitation.invitation.id)">Delete<nb-icon icon="trash-2"></nb-icon></button>
+                        </div>
+                      </div>
+                    </nb-list-item>
+                  </nb-list>
+                </nb-card-body>
+                <nb-card-footer>
+                  <div class="item-2">
+                    <button nbButton (click)="openInvitationWindow()">Send invitations</button>
+                  </div>
+                </nb-card-footer>
+              </nb-card>
+            </nb-tab>
+            <nb-tab tabTitle="Statistics">
+              <nb-card>
+                <nb-accordion>
+                  <nb-accordion-item>
+                    <nb-accordion-item-header><b><h4>General statistics</h4></b></nb-accordion-item-header>
+                    <nb-accordion-item-body>
+                      <nb-list>
+                        <nb-list-item>
+                          <div class="item-container">
+                            <div class="item-1">
+                              <div class="item-left">
+                                <b><h5>Number of answers:</h5></b>
+                              </div>
+                              <div class="item-left">
+                                <h5>{{getStatistics().numberOfAnswers}}</h5>
+                              </div>
+                            </div>
+                            <div class="item-3">
+                              <div class="item-left">
+                                <b><h5>Percent of users who answered:</h5></b>
+                              </div>
+                              <div class="item-left">
+                                <h5>{{getStatistics().percentOfUsersWhoAnswered.toFixed(2)}}%</h5>
+                              </div>
+                            </div>
+                          </div>
+                        </nb-list-item>
+                        <nb-list-item>
+                          <div class="item-container">
+                            <div class="item-1">
+                              <div class="item-left">
+                                <b><h5>Number of invitations sent:</h5></b>
+                              </div>
+                              <div class="item-left">
+                                <h5>{{getStatistics().numberOfInvitationsSent}}</h5>
+                              </div>
+                            </div>
+                            <div class="item-3">
+                              <div class="item-left">
+                                <b><h5>Percent of invitations accepted:</h5></b>
+                              </div>
+                              <div class="item-left">
+                                <h5>{{getStatistics().percentOfInvitationsAccepted.toFixed(2)}}%</h5>
+                              </div>
+                            </div>
+                          </div>
+                        </nb-list-item>
+                      </nb-list>
+                      <nb-card>
+                        <nb-card-header>
+                          <div class="item-2">
+                            <b><h5>Answers over time</h5></b>
+                          </div>
+                        </nb-card-header>
+                        <nb-card-body>
+                          <app-line-chart type="Answers" [data]="getAnswersOverTime()" [categories]="getAnswersTimeAxis()"></app-line-chart>
+                        </nb-card-body>
+                      </nb-card>
+                    </nb-accordion-item-body>
+                  </nb-accordion-item>
+                  <nb-accordion-item>
+                    <nb-accordion-item-header>
+                      <b><h4>Answers</h4></b>
+                    </nb-accordion-item-header>
+                    <nb-accordion-item-body>
+                      <ng-container *ngFor="let entry of answerCount">
+                          <nb-card>
+                            <nb-card-header>
+                              <div class="item-2">
+                                <b><h5>{{entry.question}}</h5></b>
+                              </div>
+                            </nb-card-header>
+                            <nb-card-body>
+                              <app-bar-chart type="Answers" [data]="entry.count"
+                               [categories]="entry.answers"></app-bar-chart>
+                            </nb-card-body>
+                          </nb-card>
+                      </ng-container>
+                    </nb-accordion-item-body>
+                  </nb-accordion-item>
+                  <nb-accordion-item>
+                    <nb-accordion-item-header><b><h4>Users</h4></b></nb-accordion-item-header>
+                    <nb-accordion-item-body>
+                      <nb-card>
+                        <nb-card>
+                          <nb-card-body>
+                            <div class="item-2">
+                              <b><h5>Gender distribution</h5></b>
+                            </div>
+                            <app-pie-chart type="Gender" [data]="[getStatistics().numberOfMaleUsersWhoAnswered, getStatistics().numberOfFemaleUsersWhoAnswered]"></app-pie-chart>
+                          </nb-card-body>
+                        </nb-card>
+                        <nb-card>
+                          <nb-card-header>
+                            <div class="item-2">
+                              <div class="item-center">
+                                <b><h5>Average age:</h5></b>
+                              </div>
+                              <div class="item-left">
+                                <b><h5>{{getStatistics().averageAge}}</h5></b>
+                              </div>
+                            </div>
+                          </nb-card-header>
+                          <nb-card-body>
+                            <div class="item-2">
+                              <b><h5>Age distribution</h5></b>
+                            </div>
+                            <app-bar-chart type="Age" [data]="getDistribution(getStatistics().ageList, linspace(getStatistics().ageList).numberArray,'Age')"
+                            [categories]="linspace(getStatistics().ageList).stringArray"></app-bar-chart>
+                          </nb-card-body>
+                        </nb-card>
+                        <nb-card>
+                          <nb-card-header>
+                            <div class="item-2">
+                              <div class="item-center">
+                                <b><h5>Number of different countries:</h5></b>
+                              </div>
+                              <div class="item-left">
+                                <b><h5>{{getStatistics().numberOfDifferentCountries}}</h5></b>
+                              </div>
+                            </div>
+                          </nb-card-header>
+                          <nb-card-body>
+                            <div class="item-2">
+                              <b><h5>Countries distribution</h5></b>
+                            </div>
+                            <app-bar-chart type="World" [data]="getDistributionCountries(getStatistics().countriesList, getCountries(getStatistics().countriesList))"
+                            [categories]="getCountries(getStatistics().countriesList)"></app-bar-chart>
+                          </nb-card-body>
+                        </nb-card>
+                      </nb-card>
+                    </nb-accordion-item-body>
+                  </nb-accordion-item>
+                  <nb-accordion-item>
+                    <nb-accordion-item-header><b><h4>Ratings</h4></b></nb-accordion-item-header>
+                    <nb-accordion-item-body>
+                      <nb-card>
+                        <nb-card-header>
+                          <div class="item-2">
+                            <div class="item-left">
+                              <b><h5>Average rating:</h5></b>
+                            </div>
+                            <div class="item-left">
+                              <app-rating [averageRating]="getStatistics().averageRating"></app-rating>
+                            </div>
+                          </div>
+                        </nb-card-header>
+                        <nb-card-body>
+                          <div class="item-2">
+                            <b><h5>Rating distribution</h5></b>
+                          </div>
+                          <div class="item-2">
+                            <app-bar-chart type="Ratings" [data]="getDistribution(getStatistics().ratings,[1,2,3,4,5],'Ratings')" [categories]="['1','2','3','4','5']" class="echart"></app-bar-chart>
+                          </div>
+                        </nb-card-body>
+                        <nb-card-body>
+                          <div class="item-2">
+                            <b><h5>Average rating over time</h5></b>
+                          </div>
+                          <div class="item-2">
+                            <app-line-chart type="Ratings" [data]="getAverageRatingOverTime()" [categories]="getAnswersTimeAxis()" class="echart"></app-line-chart>
+                          </div>
+                        </nb-card-body>
+                      </nb-card>
+                    </nb-accordion-item-body>
+                  </nb-accordion-item>
+                  <nb-accordion-item>
+                    <nb-accordion-item-header><b><h4>Feedbacks</h4></b></nb-accordion-item-header>
+                    <nb-accordion-item-body>
+                      <nb-card>
+                        <nb-card-body>
+                          <div class="item-2">
+                            <b><h5>Feedback distribution</h5></b>
+                          </div>
+                        </nb-card-body>
+                        <nb-card-body>
+                          <app-pie-chart type="Feedbacks" [data]="[getStatistics().numberOfPositiveFeedbacks, getStatistics().numberOfNegativeFeedbacks,
+                            getStatistics().numberOfMixedFeedbacks, getStatistics().numberOfNeutralFeedbacks]"></app-pie-chart>
+                        </nb-card-body>
+                        <nb-card-body>
+                          <div *ngFor="let feedback of getStatistics().listOfFeedbacks">
+                            <nb-card>
+                              <nb-card-header>
+                                <div class="item-container">
+                                  <div class="item-left">
+                                    <nb-icon class="custom-icon" [icon]="getFeedbackIcon(feedback[1])" [status]="getFeedbackStatus(feedback[1])"></nb-icon>
+                                  </div>
+                                  <div class="item-left">
+                                    <nb-user name="{{feedback[2]}} {{feedback[3]}}" title="{{feedback[4]}}"></nb-user>
+                                  </div>
+                                  <div class="item-left">
+                                    <app-rating [averageRating]="+feedback[5]"></app-rating>
+                                  </div>
+                                </div>
+                              </nb-card-header>
+                              <nb-card-body>
+                                {{feedback[0]}}
+                              </nb-card-body>
+                            </nb-card>
+                          </div>
+                        </nb-card-body>
+                      </nb-card>
+                    </nb-accordion-item-body>
+                  </nb-accordion-item>
+                </nb-accordion>
+              </nb-card>
+            </nb-tab>
+          </nb-tabset>
+        </nb-card>
+      </nb-card-body>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>

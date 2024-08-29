@@ -1,0 +1,33 @@
+.rating {
+  display: flex;
+}
+
+.star {
+  position: relative;
+  font-size: 2rem;
+  color: lightgray;
+  display: inline-block;
+  width: 1em;
+  line-height: 1;
+}
+
+.star::before {
+  content: "\2605";
+}
+
+.star-full {
+  color: orange;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.star-full::before {
+  content: "\2605";
+  position: absolute;
+  top: 0;
+  left: 0;
+}

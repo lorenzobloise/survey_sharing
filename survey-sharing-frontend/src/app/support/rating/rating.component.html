@@ -1,0 +1,7 @@
+<div class="rating">
+  <ng-container *ngFor="let star of stars">
+    <span class="star">
+      <span class="star-full" [style.width]="getStarWidth(star)"></span>
+    </span>
+  </ng-container>
+</div>

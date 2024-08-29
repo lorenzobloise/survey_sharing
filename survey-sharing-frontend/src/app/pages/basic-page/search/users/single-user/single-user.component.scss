@@ -1,0 +1,25 @@
+.item-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px;
+}
+
+.item-1 {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.item-2 {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.item-3 {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}

@@ -1,0 +1,83 @@
+<nb-layout>
+  <nb-layout-column>
+    <nb-card>
+      <nb-card-header>
+        <h1>{{getSurvey().title}}</h1>
+      </nb-card-header>
+      <nb-card-body>
+        <ng-container *ngFor="let question of questions">
+          <nb-card>
+            <nb-card-header>
+              <h5>{{question.question.question}}</h5>
+            </nb-card-header>
+            <div *ngIf="question.question.type=='MultipleChoiceQuestion'">
+              <div class="item-1">
+                <nb-card-body>
+                  <nb-radio-group [(ngModel)]="question.answer">
+                    <nb-radio *ngFor="let option of getOptions(question.question)" value="{{option.option}}">
+                      {{option.option}}
+                    </nb-radio>
+                  </nb-radio-group>
+                </nb-card-body>
+              </div>
+            </div>
+            <div *ngIf="question.question.type=='OpenEndedQuestion'">
+              <nb-card-body>
+                <div class="item-container">
+                  <div class="item-left">
+                    <h5><b>Answer: </b></h5>
+                  </div>
+                  <div class="item-1">
+                    <textarea nbInput fullWidth="true" [(ngModel)]="question.answer"></textarea>
+                  </div>
+                </div>
+              </nb-card-body>
+            </div>
+            <div *ngIf="question.question.type=='ImageQuestion'">
+              <nb-card-body>
+                <div class="item-container">
+                  <div class="item-left">
+                    <h5><b>Answer: </b></h5>
+                  </div>
+                  <div class="item-1">
+                    <input #imageInput type="file" nbInput fullWidth="true" (change)="uploadImage(imageInput, question.id)">
+                  </div>
+                </div>
+                <div class="item-container">
+                  <div *ngIf="getImage(question.answer)!=null" class="item-2">
+                    <img [src]="getImage(question.answer)?.src" alt="{{getImage(question.answer)?.image?.fileName}}">
+                  </div>
+                </div>
+              </nb-card-body>
+            </div>
+          </nb-card>
+        </ng-container>
+      </nb-card-body>
+      <nb-card>
+        <nb-card-header>
+          <div class="item-container">
+            <div class="item-left">
+              <b><h5>Rate this survey:</h5></b>
+            </div>
+            <div class="item-1">
+              <ngb-rating [(rate)]="rating" [max]="5" style="font-size: 2rem; color: orange;"></ngb-rating>
+            </div>
+          </div>
+        </nb-card-header>
+        <nb-card-header>
+          <h5>Give your feedback on this survey</h5>
+        </nb-card-header>
+        <nb-card-body>
+          <textarea nbInput fullWidth="true" placeholder="Feedback" [(ngModel)]="feedback"></textarea>
+        </nb-card-body>
+      </nb-card>
+      <nb-card-footer>
+        <div class="item-container">
+          <div class="item-2">
+            <button nbButton (click)="submit()">Submit</button>
+          </div>
+        </div>
+      </nb-card-footer>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>

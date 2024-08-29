@@ -1,0 +1,53 @@
+<nb-layout>
+  <nb-layout-header subheader fixed="false">
+    <div class="item-container">
+      <div class="item-1">
+        <a href="home/user" style="text-decoration:none;" (click)="globalService.navigate('home/user', null)"><h1>Survey Sharing</h1></a>
+      </div>
+      <div class="item-2">
+        <div class="item-container">
+          <div class="item-right">
+            <nb-actions size="medium">
+              <nb-action icon="search" (click)="search()"></nb-action>
+            </nb-actions>
+          </div>
+          <div class="item-2">
+            <input type="text" nbInput placeholder="Search" [(ngModel)]="query" (input)="onInputChange($event)">
+          </div>
+          <div class="item-left">
+            <nb-select [(ngModel)]="searchType" placeholder="Search type" (ngModelChange)="onModelChange($event)">
+              <nb-option value="surveys">Surveys</nb-option>
+              <nb-option value="users">Users</nb-option>
+            </nb-select>
+          </div>
+          <div class="item-left">
+            <div class="item-container">
+              <div class="item-left" *ngIf="!globalService.getDarkMode()">
+                <nb-icon icon="sun"></nb-icon>
+              </div>
+              <div class="item-left" *ngIf="globalService.getDarkMode()">
+                <nb-icon icon="moon"></nb-icon>
+              </div>
+              <div class="item-left">
+                <nb-toggle [(checked)]="darkMode" (checkedChange)="onCheckedChange($event)"></nb-toggle>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="item-3">
+        <nb-actions size="medium">
+          <nb-action icon="plus" (click)="globalService.navigate('home/create-survey', null)" title="Create survey"></nb-action>
+          <nb-action icon="person" (click)="globalService.navigate('home/user', null)" title="Your profile"></nb-action>
+          <nb-action icon="log-out" (click)="globalService.logout()" title="Log out"></nb-action>
+        </nb-actions>
+      </div>
+    </div>
+  </nb-layout-header>
+  <nb-layout-column>
+    <router-outlet></router-outlet>
+  </nb-layout-column>
+  <nb-layout-footer fixed="true">
+    Lorenzo Bloise - l.bloise@outlook.it
+  </nb-layout-footer>
+</nb-layout>

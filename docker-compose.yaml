@@ -1,0 +1,44 @@
+version: "3.1"
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - data:/data
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Rome
+    networks:
+      - survey_sharing_network
+  springboot_backend:
+    build:
+      context: ./survey_sharing_backend
+      dockerfile: Dockerfile
+    container_name: springboot_backend
+    restart: always
+    ports: 
+      - "8080:8080"
+    depends_on:
+      - mongodb
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/survey_sharing
+    networks:
+      - survey_sharing_network
+  angular_frontend:
+    build:
+      context: ./survey-sharing-frontend
+      dockerfile: Dockerfile
+    container_name: angular_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - springboot_backend
+    networks:
+      - survey_sharing_network
+volumes:
+  data: {}
+networks:
+  survey_sharing_network:
+    driver: bridge

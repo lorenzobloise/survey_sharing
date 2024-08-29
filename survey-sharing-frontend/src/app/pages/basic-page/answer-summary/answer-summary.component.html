@@ -1,0 +1,105 @@
+<nb-layout>
+  <nb-layout-column>
+    <nb-card>
+      <nb-card-header>
+        <h1>{{getSurvey().title}}</h1>
+      </nb-card-header>
+      <nb-card-body>
+        <nb-card>
+          <nb-card-header>
+            <h4>Information</h4>
+          </nb-card-header>
+          <nb-card-body>
+            <nb-list>
+              <nb-list-item>
+                <div class="item-container">
+                  <div class="item-left">
+                    <b>Answered by:</b>
+                  </div>
+                  <div class="item-1">
+                    <nb-user name="{{getUser().firstname}} {{getUser().lastname}}" title="{{getUser().username}}"></nb-user>
+                  </div>
+                </div>
+              </nb-list-item>
+              <nb-list-item>
+                <div class="item-container">
+                  <div class="item-left">
+                    Answer date:
+                  </div>
+                  <div class="item-1">
+                    {{getAnswer().answerDate[0]}}/{{getAnswer().answerDate[1]}}/{{getAnswer().answerDate[2]}}
+                    <br>{{getAnswer().answerDate[3]}}:{{getAnswer().answerDate[4]}}:{{getAnswer().answerDate[5]}}
+                  </div>
+                </div>
+              </nb-list-item>
+              <nb-list-item>
+                <div class="item-container">
+                  <div class="item-left">
+                    <b>Rating:</b>
+                  </div>
+                  <div class="item-1">
+                    <app-rating [averageRating]="getRating()"></app-rating>
+                  </div>
+                </div>
+              </nb-list-item>
+              <nb-list-item>
+                <div class="item-container">
+                  <div class="item-left">
+                    <b>Feedback:</b>
+                  </div>
+                  <div class="item-1">
+                    {{getAnswer().feedback}}
+                  </div>
+                </div>
+              </nb-list-item>
+            </nb-list>
+          </nb-card-body>
+        </nb-card>
+        <nb-card>
+          <ng-container *ngFor="let question of questions">
+            <nb-card>
+              <nb-card-header>
+                <h5>{{question.question.question}}</h5>
+              </nb-card-header>
+              <div *ngIf="isMultipleChoice(question.question)">
+                <div class="item-1">
+                  <nb-card-body>
+                    <nb-radio-group disabled [ngModel]="question.answer">
+                      <nb-radio *ngFor="let option of getOptions(question.question)" [value]="option.option">
+                        {{option.option}}
+                      </nb-radio>
+                    </nb-radio-group>
+                  </nb-card-body>
+                </div>
+              </div>
+              <div *ngIf="isOpenEnded(question.question)">
+                <nb-card-body>
+                  <div class="item-container">
+                    <div class="item-left">
+                      <h5><b>Answer: </b></h5>
+                    </div>
+                    <div class="item-1">
+                      {{question.answer}}
+                    </div>
+                  </div>
+                </nb-card-body>
+              </div>
+              <div *ngIf="isImage(question.question)">
+                <nb-card-body>
+                  <div class="item-container">
+                    <div class="item-left">
+                      <h5><b>Answer: </b></h5>
+                    </div>
+                    <div *ngIf="getImage(question.question)!=null" class="item-2">
+                      <img [src]="getImage(question.question)?.src" alt="{{getImage(question.question)?.image?.fileName}}">
+                    </div>
+                  </div>
+                </nb-card-body>
+              </div>
+            </nb-card>
+          </ng-container>
+        </nb-card>
+      </nb-card-body>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>
